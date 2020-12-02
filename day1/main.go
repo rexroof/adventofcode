@@ -37,7 +37,7 @@ func main() {
 	for _, x := range nums {
 		for _, y := range nums {
 			if x+y == 2020 {
-				fmt.Printf("%d + %d = 2020\n", x, y)
+				fmt.Printf("%d + %d = 2020   ( %d * %d is %d )\n", x, y, x, y, x*y)
 			}
 		}
 	}
