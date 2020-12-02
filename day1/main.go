@@ -34,11 +34,36 @@ func main() {
 		}
 	}
 
+	// for two numbers.
 	for _, x := range nums {
+		var found bool = false
 		for _, y := range nums {
 			if x+y == 2020 {
 				fmt.Printf("%d + %d = 2020   ( %d * %d is %d )\n", x, y, x, y, x*y)
+				found = true
 			}
 		}
+		if found {
+			break
+		}
 	}
+
+	for _, x := range nums {
+		var found bool = false
+		for _, y := range nums {
+			for _, z := range nums {
+				if x+y+z == 2020 {
+					fmt.Printf("%d + %d + %d = 2020   ( %d * %d * %d is %d )\n", x, y, z, x, y, z, x*y*z)
+					found = true
+				}
+				if found {
+					break
+				}
+			}
+		}
+		if found {
+			break
+		}
+	}
+
 }
