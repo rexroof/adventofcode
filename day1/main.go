@@ -7,18 +7,22 @@ import (
 )
 
 func main() {
-  inputUrl := "https://adventofcode.com/2020/day/1/input"
+  inputFile := "input.txt"
 
-  resp, err := http.Get(inputUrl)
-  if err != nil {
+  file, err := os.Open(inputFile)
+  if err != nil { 
     fmt.Printf("%s", err)
-    os.Exit(1)
+    os.Exit(1) 
   }
-  defer resp.Body.Close()
-  contents,err := ioutil.ReadAll(resp.Body)
-  if err != nil {
-    fmt.Printf("%s", err)
-    os.Exit(1)
+  defer file.Close()
+
+  var lines []string
+  scanner := bufio.NewScanner(file)
+  for scanner.Scan() {
+    lines = append(lines, scanner.Text())
   }
-  fmt.Printf("%s\n", string(contents))
+  
+  for i, line := range lines {
+    fmt.Println(i, line)
+  }
 }
