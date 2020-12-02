@@ -30,6 +30,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	sled_valid := 0
+	sled_invalid := 0
 	valid := 0
 	invalid := 0
 
@@ -56,18 +58,31 @@ func main() {
 		let := string(results[3])
 		pword := string(results[4])
 
+
+    // count how many times letter is in password and check range
 		reglet := regexp.MustCompile(let)
 		matchlet := reglet.FindAllStringIndex(pword, -1)
 
 		if len(matchlet) >= letMin && len(matchlet) <= letMax {
+			sled_valid++
+		} else {
+			sled_invalid++
+		}
+
+		// logic to make sure ONLY ONE of these match
+		first := let[0] == pword[letMin-1]
+		second := let[0] == pword[letMax-1]
+
+		if first && second {
+			invalid++
+		} else if first || second {
 			valid++
 		} else {
 			invalid++
-			// fmt.Printf("found %d matches\n", len(matchlet))
-			//fmt.Println(pword)
 		}
 
 	}
-	fmt.Printf("valid: %d  invalid: %d\n", valid, invalid)
+	fmt.Printf("Sled Policy:   valid: %d  invalid: %d\n", sled_valid, sled_invalid)
+	fmt.Printf("2nd Policy:    valid: %d  invalid: %d\n", valid, invalid)
 
 }
