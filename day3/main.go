@@ -40,9 +40,45 @@ func main() {
 		theSlope = append(theSlope, oneRow)
 	}
 
-  /*
-	for _, arr := range theSlope {
-		fmt.Println(arr)
+	/*
+		for _, arr := range theSlope {
+			fmt.Println(arr)
+		}
+	*/
+
+	// starting spot
+	x, y := 0, 0
+
+	// slope
+	xo, yo := 1, 3
+
+	clear_count := 0
+	tree_count := 0
+
+	// for i := 1; i <= 100; i++ {
+	for i := 1; i < len(theSlope); i++ {
+		myx := x + xo*i
+		myy := y + yo*i
+
+		fmt.Printf("%d,%d\n", myx, myy)
+
+		// since our pattern of this line repeats,
+		//   shift our index to the left by the length of our array
+		//   ( -1 to account for 0 )
+		for myy >= (len(theSlope[myx]) - 1) {
+			myy -= (len(theSlope[myx]) - 1)
+		}
+
+		if theSlope[myx][myy] {
+			clear_count++
+		} else {
+			tree_count++
+		}
+
+		fmt.Printf("%d,%d %t\n", myx, myy, theSlope[myx][myy])
+
 	}
-  */
+
+	fmt.Printf("clear: %d tree: %d\n", clear_count, tree_count)
+
 }
