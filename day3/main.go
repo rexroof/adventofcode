@@ -11,6 +11,33 @@ Starting at the top-left corner of your map and following
   a slope of right 3 and down 1, how many trees would you encounter?
 */
 
+func countTrees(slope [][]bool, offset_x int, offset_y int) int {
+	// starting spot
+	x, y := 0, 0
+	tree_count := 0
+
+	// this isn't great for x > 1, but the break fixes it
+	for i := 1; i < len(slope); i++ {
+		myx := x + offset_x*i
+		myy := y + offset_y*i
+
+		if myx > len(slope) {
+			break
+		}
+
+		// since our pattern of this line repeats,
+		//   shift our index to the left by the length of our array
+		for myy >= len(slope[myx]) {
+			myy -= len(slope[myx])
+		}
+
+		if !(slope[myx][myy]) {
+			tree_count++
+		}
+	}
+	return tree_count
+}
+
 func main() {
 	inputFile := "input.txt"
 
@@ -40,45 +67,15 @@ func main() {
 		theSlope = append(theSlope, oneRow)
 	}
 
-	/*
-		for _, arr := range theSlope {
-			fmt.Println(arr)
-		}
-	*/
+	checking := [5][2]int{
+		{1, 1}, {1, 3}, {1, 5}, {1, 7}, {2, 1}}
 
-	// starting spot
-	x, y := 0, 0
-
-	// slope
-	xo, yo := 1, 3
-
-	clear_count := 0
-	tree_count := 0
-
-	// for i := 1; i <= 100; i++ {
-	for i := 1; i < len(theSlope); i++ {
-		myx := x + xo*i
-		myy := y + yo*i
-
-		// fmt.Printf("%d  %d,%d\n", i, myx, myy)
-
-		// since our pattern of this line repeats,
-		//   shift our index to the left by the length of our array
-		for myy >= len(theSlope[myx]) {
-			myy -= len(theSlope[myx])
-		}
-		// fmt.Println(theSlope[myx])
-
-		if theSlope[myx][myy] {
-			clear_count++
-		} else {
-			tree_count++
-		}
-
-		// fmt.Printf("%d,%d %t\n", myx, myy, theSlope[myx][myy])
-
+	sum := 1
+	for _, a := range checking {
+		trees := countTrees(theSlope, a[0], a[1])
+		fmt.Printf("slope: %d %d trees: %d\n", a[0], a[1], trees)
+		sum *= trees
 	}
-
-	fmt.Printf("clear: %d tree: %d\n", clear_count, tree_count)
+	fmt.Printf("sum: %d\n", sum)
 
 }
