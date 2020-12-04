@@ -60,14 +60,14 @@ func main() {
 		myx := x + xo*i
 		myy := y + yo*i
 
-		fmt.Printf("%d,%d\n", myx, myy)
+		// fmt.Printf("%d  %d,%d\n", i, myx, myy)
 
 		// since our pattern of this line repeats,
 		//   shift our index to the left by the length of our array
-		//   ( -1 to account for 0 )
-		for myy >= (len(theSlope[myx]) - 1) {
-			myy -= (len(theSlope[myx]) - 1)
+		for myy >= len(theSlope[myx]) {
+			myy -= len(theSlope[myx])
 		}
+		// fmt.Println(theSlope[myx])
 
 		if theSlope[myx][myy] {
 			clear_count++
@@ -75,7 +75,7 @@ func main() {
 			tree_count++
 		}
 
-		fmt.Printf("%d,%d %t\n", myx, myy, theSlope[myx][myy])
+		// fmt.Printf("%d,%d %t\n", myx, myy, theSlope[myx][myy])
 
 	}
 
