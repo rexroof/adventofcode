@@ -1,33 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"math"
+	"os"
 	"strconv"
 	"strings"
 )
-
-/*
-
-// 128 rows, F - front half, B - back half, repeating
-
-128
-F
-1-64            65-128
-F
-1-32 33-64
-F
-1-16 17-32
-F
-1-8 9-16
-F
-1-4 5-8
-F
-1-2 3-4
-F B F B
-1 2 3 4
-
-
-*/
 
 // this converts rows and seats to numbers
 func rowToNum(row string) int64 {
@@ -46,6 +26,7 @@ func rowToNum(row string) int64 {
 	}
 }
 
+// this generates our seatID
 func calcSeatID(boardingPass string) int64 {
 	// rowNum := rowToNum(boardingPass[0:7])
 	// posNum := rowToNum(boardingPass[7:10])
@@ -55,25 +36,22 @@ func calcSeatID(boardingPass string) int64 {
 }
 
 func main() {
-	a := "FBFBBFFRLR"
-	fmt.Printf("%s split is %s and %s\n", a, a[0:7], a[7:10])
-	fmt.Printf("%s SeatID is %d\n", a, calcSeatID(a))
+	inputFile := "input.txt"
 
-	a = "BFFFBBFRRR"
-	fmt.Printf("%s split is %s and %s\n", a, a[0:7], a[7:10])
-	fmt.Printf("%s SeatID is %d\n", a, calcSeatID(a))
-	a = "FFFBBBFRRR"
-	fmt.Printf("%s split is %s and %s\n", a, a[0:7], a[7:10])
-	fmt.Printf("%s SeatID is %d\n", a, calcSeatID(a))
-	a = "BBFFBBFRLL"
-	fmt.Printf("%s split is %s and %s\n", a, a[0:7], a[7:10])
-	fmt.Printf("%s SeatID is %d\n", a, calcSeatID(a))
+  // open file
+	file, err := os.Open(inputFile)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	defer file.Close()
 
-	fmt.Printf("BBBBBBB is %d\n", rowToNum("BBBBBBB"))
-	fmt.Printf("FFFFFFF is %d\n", rowToNum("FFFFFFF"))
-	fmt.Printf("FBFBBFF is %d\n", rowToNum("FBFBBFF"))
-	fmt.Printf("RRR is %d\n", rowToNum("RRR"))
-	fmt.Printf("RLR is %d\n", rowToNum("RLR"))
-	fmt.Printf("LLL is %d\n", rowToNum("LLL"))
+  // read through file, track largest seatid in biggest
+	var biggest float64
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		biggest = math.Max(biggest, float64(calcSeatID(scanner.Text())))
+	}
 
+	fmt.Printf("largest SeatID was %g\n", biggest)
 }
