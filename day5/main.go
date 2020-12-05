@@ -29,6 +29,7 @@ F B F B
 
 */
 
+// this converts rows and seats to numbers
 func rowToNum(row string) int64 {
 	// replace F/B with 0/1
 	rowBinary := strings.Replace(row, "B", "1", -1)
@@ -45,7 +46,28 @@ func rowToNum(row string) int64 {
 	}
 }
 
+func calcSeatID(boardingPass string) int64 {
+	// rowNum := rowToNum(boardingPass[0:7])
+	// posNum := rowToNum(boardingPass[7:10])
+	// multiply the row by 8, then add the column
+	// return ((rowNum * 8) + posNum)
+	return ((rowToNum(boardingPass[0:7]) * 8) + rowToNum(boardingPass[7:10]))
+}
+
 func main() {
+	a := "FBFBBFFRLR"
+	fmt.Printf("%s split is %s and %s\n", a, a[0:7], a[7:10])
+	fmt.Printf("%s SeatID is %d\n", a, calcSeatID(a))
+
+	a = "BFFFBBFRRR"
+	fmt.Printf("%s split is %s and %s\n", a, a[0:7], a[7:10])
+	fmt.Printf("%s SeatID is %d\n", a, calcSeatID(a))
+	a = "FFFBBBFRRR"
+	fmt.Printf("%s split is %s and %s\n", a, a[0:7], a[7:10])
+	fmt.Printf("%s SeatID is %d\n", a, calcSeatID(a))
+	a = "BBFFBBFRLL"
+	fmt.Printf("%s split is %s and %s\n", a, a[0:7], a[7:10])
+	fmt.Printf("%s SeatID is %d\n", a, calcSeatID(a))
 
 	fmt.Printf("BBBBBBB is %d\n", rowToNum("BBBBBBB"))
 	fmt.Printf("FFFFFFF is %d\n", rowToNum("FFFFFFF"))
