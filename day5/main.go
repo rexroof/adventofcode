@@ -56,7 +56,7 @@ func main() {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		seatid := calcSeatID(scanner.Text())
-		fmt.Println(seatid)
+		// fmt.Println(seatid)
 
 		biggest = math.Max(biggest, float64(seatid))
 		toats = (toats + float64(seatid))
