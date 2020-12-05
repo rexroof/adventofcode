@@ -47,5 +47,6 @@ func main() {
 
 	fmt.Printf("BBBBBBB is %d\n", rowToNum("BBBBBBB"))
 	fmt.Printf("FFFFFFF is %d\n", rowToNum("FFFFFFF"))
+	fmt.Printf("FBFBBFF is %d\n", rowToNum("FBFBBFF"))
 
 }
