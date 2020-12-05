@@ -33,6 +33,8 @@ func rowToNum(row string) int64 {
 	// replace F/B with 0/1
 	rowBinary := strings.Replace(row, "B", "1", -1)
 	rowBinary = strings.Replace(rowBinary, "F", "0", -1)
+	rowBinary = strings.Replace(rowBinary, "L", "0", -1)
+	rowBinary = strings.Replace(rowBinary, "R", "1", -1)
 
 	// convert binary string to int
 	if i, err := strconv.ParseInt(rowBinary, 2, 8); err != nil {
@@ -48,5 +50,8 @@ func main() {
 	fmt.Printf("BBBBBBB is %d\n", rowToNum("BBBBBBB"))
 	fmt.Printf("FFFFFFF is %d\n", rowToNum("FFFFFFF"))
 	fmt.Printf("FBFBBFF is %d\n", rowToNum("FBFBBFF"))
+	fmt.Printf("RRR is %d\n", rowToNum("RRR"))
+	fmt.Printf("RLR is %d\n", rowToNum("RLR"))
+	fmt.Printf("LLL is %d\n", rowToNum("LLL"))
 
 }
