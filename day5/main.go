@@ -38,7 +38,7 @@ func calcSeatID(boardingPass string) int64 {
 func main() {
 	inputFile := "input.txt"
 
-  // open file
+	// open file
 	file, err := os.Open(inputFile)
 	if err != nil {
 		fmt.Println(err)
@@ -46,12 +46,33 @@ func main() {
 	}
 	defer file.Close()
 
-  // read through file, track largest seatid in biggest
+	// to try and track missing seat, looking for min, max, sum
+
+	// read through file, track largest seatid in biggest
 	var biggest float64
+	var smallest float64 = 99999999
+	var toats float64
+
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		biggest = math.Max(biggest, float64(calcSeatID(scanner.Text())))
+		seatid := calcSeatID(scanner.Text())
+		fmt.Println(seatid)
+
+		biggest = math.Max(biggest, float64(seatid))
+		toats = (toats + float64(seatid))
+		smallest = math.Min(smallest, float64(seatid))
 	}
 
 	fmt.Printf("largest SeatID was %g\n", biggest)
+	fmt.Printf("smallest SeatID was %g\n", smallest)
+	fmt.Printf("total SeatIDs was %g\n", toats)
+
+	// expected sum sequence up to highest
+	hightotal := (biggest * (biggest + 1)) / 2
+	// sum of number up to our smallest
+	smalltotal := ((smallest - 1) * smallest) / 2
+	expectedsum := hightotal - smalltotal
+
+	// difference here *SHOULD* be missing seat
+	fmt.Printf("expected sum: %g difference: %g\n", expectedsum, (expectedsum - toats))
 }
