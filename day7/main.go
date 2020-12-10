@@ -10,22 +10,22 @@ import (
 
 // count how many bags are in a specific color bag
 func countBagsInside(bags map[string]map[string]int, bagToCheck map[string]int) int {
-	var total_bags int = 1
+	var total_bags int = 0
 
 	// if this bag contains no other bags, we just return 1
 	if count, exists := bagToCheck["none"]; exists {
 		if count == 0 {
-			total_bags = 1
+			total_bags = 0
 		}
 	} else {
 		for color, count := range bagToCheck {
-			fmt.Printf("%d %s\n", count, color)
 			check := countBagsInside(bags, bags[color])
-			fmt.Printf("check is %d for %s\n", check, color)
-			fmt.Printf("%d * %d\n", count, check)
 
+			// add the number of bags.
+			total_bags += count
+
+			// plus the bags inside of those
 			total_bags += (count * check)
-			fmt.Printf("total_bags is now %d \n", total_bags)
 
 		}
 	}
