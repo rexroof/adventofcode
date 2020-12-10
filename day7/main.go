@@ -8,6 +8,31 @@ import (
 	"strings"
 )
 
+// count how many bags are in a specific color bag
+func countBagsInside(bags map[string]map[string]int, bagToCheck map[string]int) int {
+	var total_bags int = 1
+
+	// if this bag contains no other bags, we just return 1
+	if count, exists := bagToCheck["none"]; exists {
+		if count == 0 {
+			total_bags = 1
+		}
+	} else {
+		for color, count := range bagToCheck {
+			fmt.Printf("%d %s\n", count, color)
+			check := countBagsInside(bags, bags[color])
+			fmt.Printf("check is %d for %s\n", check, color)
+			fmt.Printf("%d * %d\n", count, check)
+
+			total_bags += (count * check)
+			fmt.Printf("total_bags is now %d \n", total_bags)
+
+		}
+	}
+
+	return total_bags
+}
+
 // checks to see if seekingColor is inside bagToCheck, uses bags for recursive search
 func bagIsInside(bags map[string]map[string]int, bagToCheck map[string]int, seekingColor string) bool {
 	_found := false
@@ -17,7 +42,7 @@ func bagIsInside(bags map[string]map[string]int, bagToCheck map[string]int, seek
 		_found = true
 	} else {
 		for oneBag, _ := range bagToCheck {
-			fmt.Printf("recursive call to bagIsInside(%s)\n", oneBag)
+			// fmt.Printf("recursive call to bagIsInside(%s)\n", oneBag)
 			if bagIsInside(bags, bags[oneBag], seekingColor) {
 				_found = true
 			}
@@ -62,9 +87,10 @@ func main() {
 				if bag_count, err := strconv.Atoi(words[0]); err != nil {
 					fmt.Println(err)
 					os.Exit(1)
-				} else {
+				} else if bag_count > 0 {
 					sub_color := strings.Join(words[1:3], " ")
 					bagsDef[bag_color][sub_color] = bag_count
+					// fmt.Printf("bagsDef[%s][%s] = %d\n", bag_color, sub_color, bag_count)
 
 					// remove count, colors, then the word "bags,|."
 					words = words[4:]
@@ -77,17 +103,17 @@ func main() {
 	total_found_in := 0
 
 	for key, _ := range bagsDef {
-		fmt.Printf("checking %s:\n", key)
+		// fmt.Printf("checking %s:\n", key)
 
 		if bagIsInside(bagsDef, bagsDef[key], "shiny gold") {
-			fmt.Printf("FOUND IN %s\n", key)
+			// fmt.Printf("FOUND IN %s\n", key)
 			total_found_in++
 		} else {
-			fmt.Printf("NOT FOUND IN %s\n", key)
+			// fmt.Printf("NOT FOUND IN %s\n", key)
 		}
 
 	}
 
 	fmt.Printf("total found shiny gold in: %d\n", total_found_in)
-
+	fmt.Printf("shiny gold contains a total of %d bags\n", countBagsInside(bagsDef, bagsDef["shiny gold"]))
 }
