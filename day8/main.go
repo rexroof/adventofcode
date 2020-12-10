@@ -19,6 +19,40 @@ track how many times each instruction has been run
 if it's > 0, stop running instructions
 */
 
+// process a set of instructions.
+//   return false and value if it repeats,
+//   return true and value if it reaches end
+func processInstructions(inst []instruction.Instruction) (bool, int) {
+	_acc := 0
+	index := 0
+	for {
+		// if our index is beyond our instructions, we're done
+		if index >= len(inst) {
+			return true, _acc
+		}
+		current := inst[index]
+
+		if current.Executed > 0 {
+			// this was already run, return false
+			return false, _acc
+		} else {
+			inst[index] = current.Exec()
+		}
+
+		if current.Operation == "acc" {
+			_acc += current.Argument
+			index++
+		} else if current.Operation == "jmp" {
+			index += current.Argument
+		} else if current.Operation == "nop" {
+			index++
+		} else {
+			fmt.Printf("WTF IS %s\n", current.Operation)
+			return false, -1
+		}
+	}
+}
+
 func main() {
 	inputFile := "input.txt"
 	file, err := os.Open(inputFile)
@@ -43,79 +77,47 @@ func main() {
 		}
 		instructionsList = append(instructionsList, instruction.New(operation, argument))
 	}
-	// acc , increase accumulator
 
-	// quick sanity check.. do any nop operations contain an argument that would get us to the end?
-	/* wasnt' this easy
-	for x, ins := range instructionsList {
-		if ins.Operation == "nop" {
-			if (x + ins.Argument) == len(instructionsList) {
-				fmt.Println("found one!")
-				fmt.Println(x)
-				fmt.Println(ins)
-			}
-		}
+	// make copy and run test on original list copy
+	_copy := make([]instruction.Instruction, len(instructionsList))
+	for i := range instructionsList {
+		_copy[i] = instructionsList[i]
 	}
-	fmt.Println("exited")
-	os.Exit(0)
-	*/
 
-	accumulator := 0
-	index := 0
-	var stack [][]int
-process:
-	for {
-		// if our index is beyond our instructions, we're done
-		if index >= len(instructionsList) {
-			break process
-		}
-		current := instructionsList[index]
-		fmt.Printf("acc %d idx %d op %s arg %d exec %d \n",
-			accumulator, index, current.Operation, current.Argument, current.Executed)
-		stack = append(stack, []int{accumulator, index})
-		fmt.Println(stack[len(stack)-1])
+	pass, count := processInstructions(_copy)
+	fmt.Printf("original results:  %t, %d\n", pass, count)
 
-		if current.Executed > 0 {
-			fmt.Printf("hit repeat.  accumulator is %d\n", accumulator)
-			// if we've already executed this, rewind using the stack
+	for x, inst := range instructionsList {
+		if inst.Operation == "nop" {
 
-			rewind := stack[len(stack)-2]
-			fmt.Printf("rewound stack contains: acc %d idx %d op %s arg %d exec %d \n",
-				rewind[0], rewind[1], instructionsList[rewind[1]].Operation,
-				instructionsList[rewind[1]].Argument, instructionsList[rewind[1]].Executed)
+			// make a copy of our instructions
+			_copy := make([]instruction.Instruction, len(instructionsList))
+			for i := range instructionsList {
+				_copy[i] = instructionsList[i]
+			}
 
-			//replace rewind location with replaced jmp/nop
-			if instructionsList[rewind[1]].Operation == "jmp" {
-				_arg := instructionsList[rewind[1]].Argument
-				instructionsList[rewind[1]] = instruction.New("nop", _arg)
-				index = rewind[1]
-				continue process
-			} else if instructionsList[rewind[1]].Operation == "nop" {
-				_arg := instructionsList[rewind[1]].Argument
-				instructionsList[rewind[1]] = instruction.New("jmp", _arg)
-				index = rewind[1]
-				continue process
+			_copy[x] = instruction.New("jmp", inst.Argument)
+			if pass, count := processInstructions(_copy); pass {
+				fmt.Printf("omg, we got a pass with accumulator: %d\n", count)
 			} else {
-				fmt.Printf("operation is %s, not something we can fix", instructionsList[rewind[1]].Operation)
-				break process
+				// fmt.Printf("failed results: %t %d\n", pass, count)
 			}
-		} else {
-			instructionsList[index] = current.Exec()
-		}
 
-		// acc jmp nop
-		if current.Operation == "acc" {
-			accumulator += current.Argument
-			index++
-		} else if current.Operation == "jmp" {
-			index += current.Argument
-		} else if current.Operation == "nop" {
-			index++
-		} else {
-			fmt.Printf("WTF IS %s\n", current.Operation)
-			break process
-		}
+		} else if inst.Operation == "jmp" {
 
+			// make a copy of our instructions
+			_copy := make([]instruction.Instruction, len(instructionsList))
+			for i := range instructionsList {
+				_copy[i] = instructionsList[i]
+			}
+
+			_copy[x] = instruction.New("nop", inst.Argument)
+			if pass, count := processInstructions(_copy); pass {
+				fmt.Printf("omg, we got a pass with accumulator: %d\n", count)
+			} else {
+				// fmt.Printf("failed results: %t %d\n", pass, count)
+			}
+		}
 	}
-	fmt.Printf("program exiting, accumulator is %d\n", accumulator)
+
 }
