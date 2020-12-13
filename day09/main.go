@@ -28,6 +28,35 @@ func filterSlice(input []int, index int) []int {
 	return truck
 }
 
+// start at list[index], sum numbers to reach target,
+// return true if we can match target match
+func contiguousSearch(list []int, index int, target int) (bool, int, int) {
+	scratch := 0
+	localMin := 999999999999999
+	localMax := 0
+
+	for _, num := range list[index:len(list)] {
+		scratch += num
+
+		if num > localMax {
+			localMax = num
+		}
+		if num < localMin {
+			localMin = num
+		}
+
+		// if we hit the target, we done!
+		if scratch == target {
+			return true, localMin, localMax
+			// if we passed the target, we done!
+		} else if scratch > target {
+			return false, -1, -1
+		}
+	}
+
+	return false, -1, -1
+}
+
 func passesSumTest(list []int, value int) bool {
 	passed := false
 	var checking []int
@@ -37,7 +66,7 @@ func passesSumTest(list []int, value int) bool {
 	for x, a := range list {
 		// check every other element of this list!
 		for _, b := range filterSlice(list, x) {
-			fmt.Printf("checking if %d + %d = %d\n", a, b, value)
+			// fmt.Printf("checking if %d + %d = %d\n", a, b, value)
 			if a+b == value {
 				passed = true
 			}
@@ -69,15 +98,29 @@ func main() {
 		xmas = append(xmas, value)
 	}
 
+	failed := 0
+
+	// first find our number that doesn't have a sum set in it's group
 	groupSize := 25
 	for x := groupSize; x < len(xmas); x++ {
-		fmt.Printf("checking %d\n", xmas[x])
+		// fmt.Printf("checking %d\n", xmas[x])
 		if passesSumTest(xmas[(x-groupSize):x], xmas[x]) {
 			// fmt.Println(xmas[0:10])
 		} else {
 			// fmt.Println(xmas[0:10])
 			// fmt.Println(xmas[(x - groupSize):x])
-			fmt.Printf("failed: %d\n", xmas[x])
+			// fmt.Printf("failed: %d\n", xmas[x])
+			failed = xmas[x]
+		}
+	}
+
+	fmt.Printf("our failed number is %d, searching array\n", failed)
+
+	for idx, val := range xmas {
+		if val != failed {
+			if passed, tiny, huge := contiguousSearch(xmas, idx, failed); passed {
+				fmt.Printf("passed with %d + %d = %d\n", tiny, huge, tiny+huge)
+			}
 		}
 	}
 
