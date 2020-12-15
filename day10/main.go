@@ -3,10 +3,20 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
+	"math/big"
 	"os"
 	"sort"
 	"strconv"
 )
+
+func factorial(x *big.Int) *big.Int {
+	n := big.NewInt(1)
+	if x.Cmp(big.NewInt(0)) == 0 {
+		return n
+	}
+	return n.Mul(x, factorial(n.Sub(x, n)))
+}
 
 func main() {
 	inputFile := "input.txt"
@@ -47,19 +57,35 @@ func main() {
 	}
 
 	// count one-jolt diffs and three-jolt diffs
-	threeJolts, oneJolts := 0, 0
+	threeJolts, oneJolts, twoJolts := 0, 0, 0
 
 	for _, d := range diffs {
 		if d == 1 {
 			oneJolts++
 		} else if d == 3 {
 			threeJolts++
+		} else if d == 2 {
+			twoJolts++
 		} else if d > 3 {
 			fmt.Println("btw, have a d of %d\n", d)
 		}
-
 	}
 
 	fmt.Printf("one jolts times three jolts is  %d x %d = %d\n", oneJolts, threeJolts, oneJolts*threeJolts)
+	fmt.Printf("two jolts is %d\n", twoJolts)
+	fmt.Printf("is part2 just oneJolts ** 3  = %f (it is not)\n", math.Pow(float64(oneJolts), float64(3)))
 
+	// count through diffs determining possibilities.
+	possibilities := 1 // we know we have one!
+
+	for x := 1; x < len(diffs); x++ {
+		if diffs[x] == 1 {
+			if diffs[x+1] == 1 {
+				possibilities++
+			}
+		}
+	}
+
+	fmt.Printf("I think I counted %d possibilities\n", possibilities)
+	fmt.Println(factorial(big.NewInt(int64(possibilities))))
 }
