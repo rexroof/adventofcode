@@ -75,17 +75,44 @@ func main() {
 	fmt.Printf("two jolts is %d\n", twoJolts)
 	fmt.Printf("is part2 just oneJolts ** 3  = %f (it is not)\n", math.Pow(float64(oneJolts), float64(3)))
 
-	// count through diffs determining possibilities.
-	possibilities := 1 // we know we have one!
+	// part 2.   took hint from reddit.
+	//  - breaking list of jolts up into group separated by 1 or 3
+	var joltGroups [][]int
+	var _tmpGroup = []int{}
 
-	for x := 1; x < len(diffs); x++ {
-		if diffs[x] == 1 {
-			if diffs[x+1] == 1 {
-				possibilities++
-			}
+	// lets put the outlet (0) on the front this array
+	joltyAdapters = append([]int{0}, joltyAdapters...)
+
+	for idx, val := range joltyAdapters {
+		nextJump := -1
+		if idx+1 < len(joltyAdapters) {
+			nextJump = (joltyAdapters[idx+1] - val)
+		}
+		_tmpGroup = append(_tmpGroup, val)
+		if nextJump == 3 {
+			joltGroups = append(joltGroups, _tmpGroup)
+			_tmpGroup = []int{}
 		}
 	}
 
-	fmt.Printf("I think I counted %d possibilities\n", possibilities)
-	fmt.Println(factorial(big.NewInt(int64(possibilities))))
+	independents := 0
+	triplets := 0
+
+	for _, val := range joltGroups {
+		l := len(val)
+
+		if (l - 2) == 3 {
+			triplets++
+		} else if (l - 2) > 0 {
+			independents += (l - 2)
+		}
+		// fmt.Println(idx, val, l)
+	}
+
+	ipow := math.Pow(2, float64(independents))
+	tpow := math.Pow(7, float64(triplets))
+
+	fmt.Printf("%d independents, 2^%d is %f\n", independents, independents, ipow)
+	fmt.Printf("%d triplets, 7^%d is %f\n", triplets, triplets, tpow)
+	fmt.Printf("whole answer might be %f\n", ipow*tpow)
 }

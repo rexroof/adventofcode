@@ -1,0 +1,27 @@
+
+for part two I found this hint I thought i could adapt from reddit. 
+
+
+QuercusCorkus
+3 points ·
+5 days ago
+
+I'm not sure if this is closed-form mathematics, but here is my solution explanation:
+
+The puzzle was made easier by two facts about the puzzle input that weren't actually confounded by the rules:
+
+    There were only gaps of 1 and 3 between the numbers, no gaps of 2
+
+        This means the only removable adapters are those with a gap of 1 on both sides
+
+    There were no more than three removable adapters in a row (sequence of 5 consecutive values)
+
+It can be seen from example 1, that there are three removable adapters. It follows that there are 2³ combinations of including or excluding these adapters. All three of them are removable in a way that does not limit any of the other removable adapters (sequences of one or two in a row). Say they are independent.
+
+In example 2 there are twelve removable adapters showing up in sets of three-in-a-row, call those triplets, and three independent removable adapters. If you go through all eight possibilities of a triplet, you'll see that only one of them causes problems: if all three are removed it leaves an gap of 4. Therefore each triplet has only seven possibilities. Counting the triplets and remaining independent adapters gives the solution:
+
+2^independents * 7^triplets
+
+Note: if there was four removable values in a row, instead of that being 7*2 or 14 possibilities, it's only 13 because the sequence 1000 and 0001 are both invalid. I'm not sure what it would be for five or six in a row, since the problem didn't require it, but it certainly would have been more difficult.
+
+
