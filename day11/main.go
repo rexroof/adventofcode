@@ -31,35 +31,39 @@ func RuleOne(seats [][]rune) [][]rune {
 				clear := true
 
 				// above
-				if abv, ok := seats[x-1][y]; ok {
+				if x-1 >= 0 {
+					abv := seats[x-1][y]
 					if abv == '#' {
 						clear = false
 					}
 				}
 
 				// below
-				if blw, ok := seats[x+1][y]; ok {
+				if x+1 < len(seats) {
+					blw := seats[x+1][y]
 					if blw == '#' {
 						clear = false
 					}
 				}
 
 				// left
-				if lft, ok := seats[x][y-1]; ok {
+				if y-1 >= 0 {
+					lft := seats[x][y-1]
 					if lft == '#' {
 						clear = false
 					}
 				}
 
 				// right
-				if rgt, ok := seats[x][y+1]; ok {
+				if y+1 < len(seats[x]) {
+					rgt := seats[x][y+1]
 					if rgt == '#' {
 						clear = false
 					}
 				}
 
 				if clear == true {
-					s = '#'
+					seats[x][y] = '#'
 				}
 
 			}
@@ -69,6 +73,7 @@ func RuleOne(seats [][]rune) [][]rune {
 }
 
 // scan whole array checking and applying rule1
+// If a seat is occupied (#) and four or more seats adjacent to it are also occupied, the seat becomes empty.
 func RuleTwo(seats [][]rune) [][]rune {
 	return seats
 }
